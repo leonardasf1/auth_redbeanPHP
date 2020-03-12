@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
 	<title>Document</title>
 	<link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 </head>
 <body>
 	
@@ -16,7 +17,9 @@
 // registration
 $data = $_POST;
 if (isset($data['do_signup'])) {
-  if ($data['password_2'] != $data['password']){
+  if (!$data['password'] || !$data['email']) { 
+    echo 'заполните поля';
+  } elseif ($data['password_2'] != $data['password']){
     echo 'пароли не совпадают!';
   } elseif (R::count('users', "email = ?", array($data['email'])) > 0) {
     echo 'Email уже используется!';
@@ -38,13 +41,15 @@ if (isset($data['do_signup'])) {
 
 // authentication //$_SESSION['logged_user'] //$_SESSION['logged_user']->name;
 if (isset($data['do_login']) || isset($data['do_signup']))
-{
+{ 
   $user = R::findOne('users', 'email = ?', array($data['email']));
-  if (!$user) {
-    $login_email = false;
-  } else if (strpbrk($data['password'], "'=")) {
+  if (!$data['password'] || !$data['email']) {
+    echo 'заполните поля';
+  } elseif (strpbrk($data['password'], "'=")) {
     echo 'Некорректные символы';
-  } else if ( !(password_verify($data['password'], $user->password))) {
+  } elseif (!$user) {
+    $login_email = false;
+  } elseif ( !(password_verify($data['password'], $user->password))) {
     $login_pass = false;
   } else {
     echo 'Здравствуйте, ';
@@ -72,10 +77,10 @@ if (isset($_SESSION['logged_user'])) : ?>
             <input type="email" required name="email" placeholder="Электронный адрес" value="<?php echo @$data['email']; ?>">
           </div>
           <div class="col-md-12">
-            <input type="password" required name="password" placeholder="Придумайте пароль" value="<?php echo @$data['password']; ?>">
+            <input type="password" required name="password" placeholder="Придумайте пароль" id="pas">
           </div>
           <div class="col-md-12">
-            <input type="password" required name="password_2" placeholder="Повторите пароль">
+            <input type="password" required name="password_2" placeholder="Повторите пароль" id="pas2">
           </div>
           <div class="col-md-12">
             <input type="tel" pattern="\d{3}-\d{3}-\d{4}" placeholder="Номер мобильного телефона" name="tel" value="<?php echo @$data['tel']; ?>">
@@ -83,11 +88,15 @@ if (isset($_SESSION['logged_user'])) : ?>
         </div>
       </div>
       <div class="form__comment">
-        <button type="submit" name="do_signup">Зарегистрироваться</button>
+        <button type="submit" name="do_signup" id="do_signup">Зарегистрироваться</button>
 	      <div>Уже есть аккаунт? <a href="#">Войти</a></div>
 	      Нажимая кнопку «Зарегистрироваться»:
 	      <div>
-	      	<input name="agreement" type="checkbox" required checked> Я принимаю условия <a href="#">Пользовательского соглашения</a> и даю своё согласие Яндексу на обработку моей персональной информации на условиях, определенных <a href="#">Политикой конфиденциальности</a>.
+	      	<input name="agreement" type="checkbox" required checked>
+          Я принимаю условия 
+          <a href="#">Пользовательского соглашения</a> 
+          и даю своё согласие на обработку моей персональной информации на условиях, определенных 
+          <a href="#">Политикой конфиденциальности</a>.
 	      </div>
       </div>
     </form>

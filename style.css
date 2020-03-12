@@ -80,8 +80,22 @@ body {
 	margin-bottom: 30px;
 }
 	.form__group input:focus {
-		border-bottom: 2px solid #ffdb4d;;
+		border-bottom: 2px solid #ffdb4d;
 	}
+/*	.form__group .col-md-12::after {
+		content: '';
+		opacity: 1;
+		position: absolute;
+		z-index: 20;
+		right: 5px;
+		top: 5px;
+		width: 6px;
+		height: 15px;
+		border: solid #37b24d;
+		border-width: 0 2px 2px 0;
+		transform: rotate(45deg);
+		transition: opacity .5s ease-in;
+	}*/
 
 .form__comment {
 	font: 13px/1.5em sans-serif;
